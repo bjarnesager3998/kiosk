@@ -96,23 +96,31 @@
     </script>
     <!-- Der schwebende Lauftext -->
     <div class="fixed-marquee-banner">
-        <p class="marquee-text" id="lauftext">Lade aktuellen Ticker...</p>
-    </div>
+    <p class="marquee-text" id="lauftext">
+        Lade aktuellen Ticker...
+    </p>
+	</div>
     <script>
-        const sheetUrl = "HIER_DEIN_KOPIERTER_GOOGLE_CSV_LINK";
-
         async function fetchLauftext() {
-            try {
-                text = "Heute besucht uns die Firma Heidenhain GmbH"; 
-                if (text) {
-                    document.getElementById('lauftext').innerText = text;
-                }
-            } catch (error) {
-                console.error("Fehler beim Abrufen des Lauftexts:", error);
-            }
+    try {
+        const response = await fetch("lauftext.txt?t=" + Date.now());
+
+        if (!response.ok) {
+            throw new Error("TXT-Datei konnte nicht geladen werden");
         }
-        fetchLauftext();
-        setInterval(fetchLauftext, 30000);
+
+        const text = (await response.text()).trim();
+
+        if (text) {
+            document.getElementById("lauftext").textContent = text;
+        }
+    } catch (error) {
+        console.error("Fehler beim Laden des Lauftexts:", error);
+    }
+}
+
+fetchLauftext();
+setInterval(fetchLauftext, 30000);
     </script>
 
 </body>
