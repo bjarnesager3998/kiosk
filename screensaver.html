@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk Gesamtansicht</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+
+        /* Der Banner schwebt absolut über allem am oberen Rand */
+        .fixed-marquee-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: #ffcc00; /* Bannerfarbe */
+            z-index: 99999; /* Garantiert im Vordergrund */
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);jj
+        }
+
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            animation: scroll-left 25s linear infinite;
+            margin: 0;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Der Container lädt deine echte Webseite direkt als Fullscreen-Hintergrund */
+        .webpage-embed {
+            width: 100%;
+            height: calc(100% - 50px); /* Platz für den Banner lassen */
+            margin-top: 50px; /* Schiebt die Webseite unter den Banner */
+            border: none;
+        }
+	.slideshow {
+            position: fixed;
+            inset: 0;
+            background: #000;
+        }
+
+        .slideshow img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slideshow img.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+	<div class="slideshow">
+        <img src="images/werk1.png" class="active" alt="">
+        <img src="images/werk2.png" alt="">
+        <img src="images/werk3.png" alt="">
+        <img src="images/werk2_nacht.png" alt="">
+    </div>
+
+    <script>
+        const images = document.querySelectorAll(".slideshow img");
+        let current = 0;
+
+        // Bilder vorab laden
+        images.forEach(img => {
+            const preload = new Image();
+            preload.src = img.src;
+        });
+
+        // Alle 10 Sekunden zum nächsten Bild wechseln
+        setInterval(() => {
+            images[current].classList.remove("active");
+
+            current = (current + 1) % images.length;
+
+            images[current].classList.add("active");
+        }, 10000);
+    </script>
+    <!-- Der schwebende Lauftext -->
+    <div class="fixed-marquee-banner">
+        <p class="marquee-text" id="lauftext">Lade aktuellen Ticker...</p>
+    </div>
+    <script>
+        const sheetUrl = "HIER_DEIN_KOPIERTER_GOOGLE_CSV_LINK";
+
+        async function fetchLauftext() {
+            try {
+                text = "Ein Laufband zum Test"; 
+                if (text) {
+                    document.getElementById('lauftext').innerText = text;
+                }
+            } catch (error) {
+                console.error("Fehler beim Abrufen des Lauftexts:", error);
+            }
+        }
+        fetchLauftext();
+        setInterval(fetchLauftext, 30000);
+    </script>
+
+</body>
+</html>
