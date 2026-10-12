@@ -16,7 +16,7 @@
             height: 100px;
             background: #176B45; /* Bannerfarbe */
             z-index: 99999; /* Garantiert im Vordergrund */
-            display: flex;
+            display: none;
             align-items: center;
             overflow: hidden;
             white-space: nowrap;
@@ -101,7 +101,10 @@
     </p>
 	</div>
     <script>
-        async function fetchLauftext() {
+async function fetchLauftext() {
+    const banner = document.querySelector(".fixed-marquee-banner");
+    const lauftext = document.getElementById("lauftext");
+
     try {
         const response = await fetch("lauftext.txt?t=" + Date.now());
 
@@ -112,10 +115,15 @@
         const text = (await response.text()).trim();
 
         if (text) {
-            document.getElementById("lauftext").textContent = text;
+            lauftext.textContent = text;
+            banner.style.display = "flex";
+        } else {
+            lauftext.textContent = "";
+            banner.style.display = "none";
         }
     } catch (error) {
         console.error("Fehler beim Laden des Lauftexts:", error);
+        banner.style.display = "none";
     }
 }
 
